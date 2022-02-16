@@ -18,11 +18,17 @@ this.tableEl = document.getElementById(tableId);
 
             let values = this.getValues();
 
-                this.getPhoto((content)=>{
+            this.getPhoto().then(
+                (content) => {
 
-                values.photo = content;
+                    values.photo = content;
 
-                this.addLine(values);
+                    this.addLine(values);
+    
+
+            }, 
+             (e) => {
+                console.error(e);
 
 
             });
@@ -34,9 +40,11 @@ this.tableEl = document.getElementById(tableId);
     
     }
 
-    getPhoto(callback){
+    getPhoto(){
 
-        let fileReader = new FileReader();
+        return new Promise ((resolve, reject)=>{
+
+            let fileReader = new FileReader();
 
        let elements = [...this.formEl.elements].filter(item =>{
 
@@ -50,11 +58,21 @@ this.tableEl = document.getElementById(tableId);
 
         fileReader.onload = () =>{
 
-        callback(fileReader.result);
+            resolve(fileReader.result);
+
+        };
+
+        fileReader.onerror = (e)=>{
+
+            reject(e);
 
         };
 
         fileReader.readAsDataURL(file);
+
+        });
+
+        
 
     }
    
